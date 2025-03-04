@@ -1,0 +1,120 @@
+/* タブレット対応 */
+@media (max-width: 992px) {
+    .features-grid,
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+    
+    .calendar-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .time-slot-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+    .header-container {
+        height: 60px;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background-color: #fff;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 0;
+        transition: all 0.3s ease;
+        overflow-y: auto;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-menu li {
+        margin: 15px 0;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    .main-visual {
+        height: 80vh;
+        margin-top: 60px;
+    }
+    
+    .main-visual h2 {
+        font-size: 32px;
+    }
+    
+    .main-visual p {
+        font-size: 18px;
+    }
+    
+    section {
+        padding: 60px 0;
+    }
+    
+    .section-title {
+        font-size: 28px;
+        margin-bottom: 40px;
+    }
+    
+    .features-grid,
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta h2 {
+        font-size: 28px;
+    }
+    
+    .cta p {
+        font-size: 16px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .type-selection,
+    .radio-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .time-slot-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
