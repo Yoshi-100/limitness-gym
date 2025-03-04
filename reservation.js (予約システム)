@@ -1,0 +1,511 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // 日付選択のFlatpickrの初期化
+    if (document.getElementById('datepicker')) {
+        flatpickr("#datepicker", {
+            locale: 'ja',
+            dateFormat: 'Y年m月d日(D)',
+            minDate: 'today',
+            maxDate: new Date().fp_incr(30), // 30日先まで予約可能
+            disable: [
+                function(date) {
+                    // 定休日を設定（例：日曜日）
+                    return date.getDay() === 0;
+                }
+            ],
+            onChange: function(selectedDates, dateStr) {
+                // 選択された日付に基づいて時間枠を取得
+                fetchTimeSlots(selectedDates[0]);
+            }
+        });
+    }
+    
+    // 時間枠を取得する関数
+    function fetchTimeSlots(date) {
+        const timeSlotContainer = document.getElementById('timeSlots');
+        if (!timeSlotContainer) return;
+        
+        // ローディング表示
+        timeSlotContainer.innerHTML = '<p class="loading">時間枠を読み込み中...</p>';
+        
+        // 日付をフォーマット（YYYY-MM-DD形式）
+        const formattedDate = formatDate(date);
+        
+        // APIから時間枠を取得（仮のAPIエンドポイント）
+        // 実際の実装では、AWSのAPIエンドポイントに置き換える
+        fetch(`https://api.example.com/timeslots?date=${formattedDate}`)
+            .then(response => {
+                // デモ用のモックデータ
+                // 実際の実装では、APIからのレスポンスを使用
+                return {
+                    json: () => Promise.resolve({
+                        timeSlots: [
+                            { time: '10:00', available: true },
+                            { time: '11:00', available: true },
+                            { time: '12:00', available: false },
+                            { time: '13:00', available: true },
+                            { time: '14:00', available: true },
+                            { time: '15:00', available: false },
+                            { time: '16:00', available: true },
+                            { time: '17:00', available: true },
+                            { time: '18:00', available: true },
+                            { time: '19:00', available: true },
+                            { time: '20:00', available: false }
+                        ]
+                    })
+                };
+            })
+            .then(data => data.json())
+            .then(data => {
+                // 時間枠を表示
+                displayTimeSlots(timeSlotContainer, data.timeSlots);
+            })
+            .catch(error => {
+                console.error('Error fetching time slots:', error);
+                timeSlotContainer.innerHTML = '<p class="error">時間枠の取得に失敗しました。もう一度お試しください。</p>';
+            });
+    }
+    
+    // 時間枠を表示する関数
+    function displayTimeSlots(container, timeSlots) {
+        if (timeSlots.length === 0) {
+            container.innerHTML = '<p class="no-slots">予約可能な時間枠はありません。</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        
+        timeSlots.forEach(slot => {
+            const timeSlotElement = document.createElement('div');
+            timeSlotElement.className = `time-slot ${slot.available ? '' : 'disabled'}`;
+            timeSlotElement.textContent = slot.time;
+            
+            if (slot.available) {
+                timeSlotElement.addEventListener('click', function() {
+                    // 選択済みの時間枠があれば選択解除
+                    const selectedSlot = container.querySelector('.time-slot.selected');
+                    if (selectedSlot) {
+                        selectedSlot.classList.remove('selected');
+                    }
+                    
+                    // クリックした時間枠を選択状態にする
+                    this.classList.add('selected');
+                    
+                    // 選択した時間をフォームに設定（隠しフィールドなどを使用）
+                    const selectedTimeInput = document.createElement('input');
+                    selectedTimeInput.type = 'hidden';
+                    selectedTimeInput.name = 'selectedTime';
+                    selectedTimeInput.value = slot.time;
+                    
+                    // 既存の選択時間があれば削除
+                    const existingInput = document.querySelector('input[name="selectedTime"]');
+                    if (existingInput) {
+                        existingInput.remove();
+                    }
+                    
+                    // フォームに追加
+                    document.getElementById('reservationForm').appendChild(selectedTimeInput);
+                });
+            }
+            
+            container.appendChild(timeSlotElement);
+        });
+    }
+    
+    // 日付をフォーマットする関数（YYYY-MM-DD形式）
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    // 予約フォームの送信処理
+    const reservationForm = document.getElementById('reservationForm');
+    if (reservationForm) {
+        reservationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 選択された時間があるか確認
+            const selectedTime = document.querySelector('input[name="selectedTime"]');
+            if (!selectedTime) {
+                alert('予約時間を選択してください。');
+                return;
+            }
+            
+            // 選択された日付を取得
+            const selectedDate = document.getElementById('datepicker').value;
+            if (!selectedDate) {
+                alert('予約日を選択してください。');
+                return;
+            }
+            
+            // フォームデータを収集
+            const formData = new FormData(this);
+            const reservationData = {
+                date: selectedDate,
+                time: selectedTime.value,
+                lastName: formData.get('lastName'),
+                firstName: formData.get('firstName'),
+                gender: formData.get('gender'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                notes: formData.get('notes'),
+                type: document.querySelector('input[name="reservation-type"]:checked').value
+            };
+            
+            // 予約データをAPIに送信（仮のAPIエンドポイント）
+            // 実際の実装では、AWSのAPIエンドポイントに置き換える
+            fetch('https://api.example.com/reservations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reservationData)
+            })
+            .then(response => {
+                // デモ用のモック処理
+                // 実際の実装では、APIからのレスポンスを使用
+                return {
+                    ok: true,
+                    json: () => Promise.resolve({ success: true, message: '予約が完了しました' })
+                };
+            })
+            .then(data => data.json())
+            .then(data => {
+                if (data.success) {
+                    // 予約成功時の処理
+                    showModal('予約完了', `
+                        <p>予約が完了しました。</p>
+                        <p><strong>予約日時:</strong> ${selectedDate} ${selectedTime.value}</p>
+                        <p><strong>お名前:</strong> ${reservationData.lastName} ${reservationData.firstName}</p>
+                        <p>ご予約内容の確認メールをお送りしました。</p>
+                    `);
+                    
+                    // フォームをリセット
+                    reservationForm.reset();
+                    document.querySelector('.time-slot.selected')?.classList.remove('selected');
+                    selectedTime.remove();
+                } else {
+                    // 予約失敗時の処理
+                    showModal('エラー', `
+                        <p>予約に失敗しました。</p>
+                        <p>${data.message || 'もう一度お試しください。'}</p>
+                    `);
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting reservation:', error);
+                showModal('エラー', `
+                    <p>予約に失敗しました。</p>
+                    <p>通信エラーが発生しました。もう一度お試しください。</p>
+                `);
+            });
+        });
+    }
+    
+    // 予約検索フォームの送信処理
+    const lookupForm = document.getElementById('lookupForm');
+    const reservationResults = document.getElementById('reservationResults');
+    
+    if (lookupForm && reservationResults) {
+        lookupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const lastName = document.getElementById('lookupLastName').value;
+            const phone = document.getElementById('lookupPhone').value;
+            
+            if (!lastName || !phone) {
+                alert('姓と電話番号を入力してください。');
+                return;
+            }
+            
+            // ローディング表示
+            reservationResults.innerHTML = '<p class="loading">予約を検索中...</p>';
+            reservationResults.style.display = 'block';
+            
+            // APIから予約を検索（仮のAPIエンドポイント）
+            // 実際の実装では、AWSのAPIエンドポイントに置き換える
+            fetch(`https://api.example.com/reservations/lookup?lastName=${encodeURIComponent(lastName)}&phone=${encodeURIComponent(phone)}`)
+                .then(response => {
+                    // デモ用のモックデータ
+                    // 実際の実装では、APIからのレスポンスを使用
+                    return {
+                        json: () => Promise.resolve({
+                            success: true,
+                            reservations: [
+                                {
+                                    id: '12345',
+                                    date: '2023年10月15日(日)',
+                                    time: '14:00',
+                                    type: 'training',
+                                    status: 'confirmed'
+                                },
+                                {
+                                    id: '12346',
+                                    date: '2023年10月22日(日)',
+                                    time: '15:00',
+                                    type: 'training',
+                                    status: 'confirmed'
+                                }
+                            ]
+                        })
+                    };
+                })
+                .then(data => data.json())
+                .then(data => {
+                    if (data.success && data.reservations.length > 0) {
+                        // 予約一覧を表示
+                        displayReservations(reservationResults, data.reservations);
+                    } else {
+                        // 予約が見つからない場合
+                        reservationResults.innerHTML = '<p class="no-results">予約が見つかりませんでした。</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error looking up reservations:', error);
+                    reservationResults.innerHTML = '<p class="error">予約の検索に失敗しました。もう一度お試しください。</p>';
+                });
+        });
+    }
+    
+    // 予約一覧を表示する関数
+    function displayReservations(container, reservations) {
+        container.innerHTML = '<h3>予約一覧</h3>';
+        
+        const reservationList = document.createElement('div');
+        reservationList.className = 'reservation-list';
+        
+        reservations.forEach(reservation => {
+            const reservationItem = document.createElement('div');
+            reservationItem.className = 'reservation-item';
+            
+            const typeText = reservation.type === 'training' ? 'トレーニングセッション' : '無料カウンセリング';
+            
+            reservationItem.innerHTML = `
+                <h4>${typeText}</h4>
+                <div class="reservation-details">
+                    <p><strong>予約日時:</strong> ${reservation.date} ${reservation.time}</p>
+                    <p><strong>予約状況:</strong> ${reservation.status === 'confirmed' ? '確定' : '保留中'}</p>
+                </div>
+                <div class="reservation-actions">
+                    <button class="change-btn" data-id="${reservation.id}">変更</button>
+                    <button class="cancel-btn" data-id="${reservation.id}">キャンセル</button>
+                </div>
+            `;
+            
+            reservationList.appendChild(reservationItem);
+        });
+        
+        container.appendChild(reservationList);
+        
+        // 変更ボタンのイベントリスナー
+        container.querySelectorAll('.change-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reservationId = this.getAttribute('data-id');
+                handleReservationChange(reservationId);
+            });
+        });
+        
+        // キャンセルボタンのイベントリスナー
+        container.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const reservationId = this.getAttribute('data-id');
+                handleReservationCancel(reservationId);
+            });
+        });
+    }
+    
+    // 予約変更処理
+    function handleReservationChange(reservationId) {
+        // 予約詳細を取得（仮のAPIエンドポイント）
+        // 実際の実装では、AWSのAPIエンドポイントに置き換える
+        fetch(`https://api.example.com/reservations/${reservationId}`)
+            .then(response => {
+                // デモ用のモックデータ
+                // 実際の実装では、APIからのレスポンスを使用
+                return {
+                    json: () => Promise.resolve({
+                        success: true,
+                        reservation: {
+                            id: reservationId,
+                            date: '2023年10月15日(日)',
+                            time: '14:00',
+                            type: 'training'
+                        }
+                    })
+                };
+            })
+            .then(data => data.json())
+            .then(data => {
+                if (data.success) {
+                    // 予約変更モーダルを表示
+                    showModal('予約変更', `
+                        <p>予約ID: ${reservationId}</p>
+                        <p>現在の予約日時: ${data.reservation.date} ${data.reservation.time}</p>
+                        <p>予約変更ページに移動します。よろしいですか？</p>
+                    `, [
+                        {
+                            text: '変更する',
+                            type: 'primary',
+                            onClick: () => {
+                                // 予約変更ページに移動
+                                window.location.href = `reservation-change.html?id=${reservationId}`;
+                            }
+                        },
+                        {
+                            text: 'キャンセル',
+                            type: 'secondary',
+                            onClick: () => {
+                                closeModal();
+                            }
+                        }
+                    ]);
+                } else {
+                    showModal('エラー', `
+                        <p>予約情報の取得に失敗しました。</p>
+                        <p>もう一度お試しください。</p>
+                    `);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching reservation details:', error);
+                showModal('エラー', `
+                    <p>予約情報の取得に失敗しました。</p>
+                    <p>通信エラーが発生しました。もう一度お試しください。</p>
+                `);
+            });
+    }
+    
+    // 予約キャンセル処理
+    function handleReservationCancel(reservationId) {
+        showModal('予約キャンセル', `
+            <p>予約ID: ${reservationId}</p>
+            <p>この予約をキャンセルしてもよろしいですか？</p>
+            <p>キャンセル後は元に戻せません。</p>
+        `, [
+            {
+                text: 'キャンセルする',
+                type: 'primary',
+                onClick: () => {
+                    // APIに予約キャンセルリクエストを送信（仮のAPIエンドポイント）
+                    // 実際の実装では、AWSのAPIエンドポイントに置き換える
+                    fetch(`https://api.example.com/reservations/${reservationId}/cancel`, {
+                        method: 'POST'
+                    })
+                    .then(response => {
+                        // デモ用のモック処理
+                        // 実際の実装では、APIからのレスポンスを使用
+                        return {
+                            ok: true,
+                            json: () => Promise.resolve({ success: true })
+                        };
+                    })
+                    .then(data => data.json())
+                    .then(data => {
+                        if (data.success) {
+                            showModal('キャンセル完了', `
+                                <p>予約のキャンセルが完了しました。</p>
+                                <p>キャンセル確認メールをお送りしました。</p>
+                            `, [
+                                {
+                                    text: '閉じる',
+                                    type: 'primary',
+                                    onClick: () => {
+                                        closeModal();
+                                        // 予約一覧を再読み込み
+                                        document.getElementById('lookupForm').dispatchEvent(new Event('submit'));
+                                    }
+                                }
+                            ]);
+                        } else {
+                            showModal('エラー', `
+                                <p>キャンセルに失敗しました。</p>
+                                <p>もう一度お試しください。</p>
+                            `);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error cancelling reservation:', error);
+                        showModal('エラー', `
+                            <p>キャンセルに失敗しました。</p>
+                            <p>通信エラーが発生しました。もう一度お試しください。</p>
+                        `);
+                    });
+                }
+            },
+            {
+                text: '戻る',
+                type: 'secondary',
+                onClick: () => {
+                    closeModal();
+                }
+            }
+        ]);
+    }
+    
+    // モーダル表示関数
+    function showModal(title, content, buttons = []) {
+        // 既存のモーダルがあれば削除
+        const existingModal = document.querySelector('.modal-overlay');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // モーダル要素を作成
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        
+        const modalContainer = document.createElement('div');
+        modalContainer.className = 'modal-container';
+        
+        modalContainer.innerHTML = `
+            <span class="modal-close">&times;</span>
+            <h3 class="modal-title">${title}</h3>
+            <div class="modal-content">${content}</div>
+            <div class="modal-actions"></div>
+        `;
+        
+        // ボタンを追加
+        const modalActions = modalContainer.querySelector('.modal-actions');
+        
+        if (buttons.length === 0) {
+            // デフォルトのOKボタン
+            const okButton = document.createElement('button');
+            okButton.className = 'modal-btn primary';
+            okButton.textContent = 'OK';
+            okButton.addEventListener('click', closeModal);
+            modalActions.appendChild(okButton);
+        } else {
+            // カスタムボタン
+            buttons.forEach(button => {
+                const btnElement = document.createElement('button');
+                btnElement.className = `modal-btn ${button.type || 'primary'}`;
+                btnElement.textContent = button.text;
+                btnElement.addEventListener('click', button.onClick);
+                modalActions.appendChild(btnElement);
+            });
+        }
+        
+        // 閉じるボタンのイベントリスナー
+        modalContainer.querySelector('.modal-close').addEventListener('click', closeModal);
+        
+        modalOverlay.appendChild(modalContainer);
+        document.body.appendChild(modalOverlay);
+        
+        // モーダルを表示
+        setTimeout(() => {
+            modalOverlay.classList.add('active');
+        }, 10);
+    }
+    
+    // モーダルを閉じる関数
+    function closeModal() {
+        const modalOverlay = document.querySelector('.modal-overlay');
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => {
+                modalOverlay.remove();
+            }, 300);
+        }
+    }
+});
