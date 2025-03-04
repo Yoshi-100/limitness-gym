@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約 | LIMITNESS</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <!-- ヘッダー部分は省略（index.htmlと同じ） -->
+    <header>
+        <!-- 同上 -->
+    </header>
 
+    <!-- 予約ページメインコンテンツ -->
+    <section class="page-header">
+        <div class="container">
+            <h1>予約</h1>
+            <p>トレーニングセッションやカウンセリングのご予約はこちらから</p>
+        </div>
+    </section>
+
+    <section class="reservation-section">
+        <div class="container">
+            <div class="reservation-tabs">
+                <button class="tab-btn active" data-tab="new-reservation">新規予約</button>
+                <button class="tab-btn" data-tab="change-reservation">予約変更・キャンセル</button>
+            </div>
+
+            <div class="tab-content active" id="new-reservation">
+                <h2>新規予約</h2>
+                
+                <div class="reservation-type">
+                    <h3>予約タイプを選択</h3>
+                    <div class="type-selection">
+                        <label>
+                            <input type="radio" name="reservation-type" value="training" checked>
+                            <span>トレーニングセッション</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="reservation-type" value="counseling">
+                            <span>無料カウンセリング</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="reservation-calendar">
+                    <h3>日付と時間を選択</h3>
+                    <div class="calendar-container">
+                        <div class="date-picker">
+                            <input type="text" id="datepicker" placeholder="日付を選択">
+                        </div>
+                        <div class="time-slots">
+                            <h4>予約可能な時間</h4>
+                            <div class="time-slot-container" id="timeSlots">
+                                <!-- 時間枠はJavaScriptで動的に生成 -->
+                                <p class="loading">カレンダーから日付を選択してください</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reservation-form">
+                    <h3>お客様情報</h3>
+                    <form id="reservationForm">
+                        <div class="form-group">
+                            <label for="lastName">姓 <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstName">名 <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>性別 <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="gender" value="male" required>
+                                    <span>男性</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="gender" value="female" required>
+                                    <span>女性</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">メールアドレス</label>
+                            <input type="email" id="email" name="email">
+                            <p class="form-note">※予約確認メールをお送りします（任意）</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">電話番号 <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">備考</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="ご要望やご質問などがあればご記入ください"></textarea>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label>
+                                <input type="checkbox" name="agreement" required>
+                                <span>利用規約に同意する <span class="required">*</span></span>
+                            </label>
+                            <p class="form-note"><a href="#" target="_blank">利用規約を読む</a></p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">予約を確定する</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tab-content" id="change-reservation">
+                <h2>予約変更・キャンセル</h2>
+                
+                <div class="reservation-lookup">
+                    <h3>予約を検索</h3>
+                    <form id="lookupForm">
+                        <div class="form-group">
+                            <label for="lookupLastName">姓 <span class="required">*</span></label>
+                            <input type="text" id="lookupLastName" name="lookupLastName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lookupPhone">電話番号 <span class="required">*</span></label>
+                            <input type="tel" id="lookupPhone" name="lookupPhone" required>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="lookup-btn">予約を検索する</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="reservation-results" id="reservationResults">
+                    <!-- 検索結果はJavaScriptで動的に表示 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター部分は省略（index.htmlと同じ） -->
+    <footer>
+        <!-- 同上 -->
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/reservation.js"></script>
+</body>
+</html>
