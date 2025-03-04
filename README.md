@@ -1,215 +1,294 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIMITNESS | パーソナルトレーニングジム</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>リミットネス Gym</title>
+  <style>
+    /* 基本リセット */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: #f4f4f4;
+      color: #333;
+    }
+    /* ヘッダー */
+    header {
+      background: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin-bottom: 5px;
+    }
+    /* タブ用のナビゲーション */
+    nav {
+      background: #555;
+      overflow: hidden;
+    }
+    nav .tab {
+      float: left;
+      display: block;
+      color: #fff;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    nav .tab:hover {
+      background: #444;
+    }
+    nav .active {
+      background: #222;
+    }
+    /* コンテナ */
+    .container {
+      padding: 20px;
+    }
+    .tab-content {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      margin-top: 10px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    /* 予約フォーム等のスタイル */
+    form input, form select, form button {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+    form label {
+      margin-top: 10px;
+      display: block;
+    }
+    .status-message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    .status-success {
+      background: #e0ffe0;
+      color: #006600;
+    }
+    .status-error {
+      background: #ffe0e0;
+      color: #990000;
+    }
+    /* テーブル（予約状況表示用）のスタイル */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <!-- ヘッダー -->
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <a href="index.html">
-                    <h1>LIMITNESS</h1>
-                </a>
-            </div>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="active">ホーム</a></li>
-                    <li><a href="about.html">ジム紹介</a></li>
-                    <li><a href="price.html">料金プラン</a></li>
-                    <li><a href="trainers.html">トレーナー</a></li>
-                    <li><a href="facility.html">施設案内</a></li>
-                    <li><a href="reservation.html" class="reservation-btn">予約する</a></li>
-                    <li><a href="access.html">アクセス</a></li>
-                    <li><a href="contact.html">お問い合わせ</a></li>
-                </ul>
-            </nav>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </header>
+  <header>
+    <h1>リミットネス Gym</h1>
+    <p>～あなたの限界を超える場所～</p>
+  </header>
 
-    <!-- メインビジュアル -->
-    <section class="main-visual">
-        <div class="overlay"></div>
-        <div class="main-visual-content">
-            <h2>あなたの限界を超える場所</h2>
-            <p>LIMITNESS - 理想のカラダへ、最短距離で</p>
-            <a href="reservation.html" class="cta-button">無料カウンセリングを予約する</a>
-        </div>
-    </section>
+  <nav>
+    <div class="tab active" data-target="home">ホーム</div>
+    <div class="tab" data-target="overview">ジム概要</div>
+    <div class="tab" data-target="reservation">予約</div>
+  </nav>
 
-    <!-- 特徴セクション -->
-    <section class="features">
-        <div class="container">
-            <h2 class="section-title">LIMITNESSの特徴</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-dumbbell"></i>
-                    </div>
-                    <h3>完全個室のトレーニング環境</h3>
-                    <p>他の人の目を気にすることなく、集中してトレーニングに取り組めます。</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <h3>専属トレーナーによる指導</h3>
-                    <p>経験豊富なトレーナーが一人ひとりに合わせたプログラムを提供します。</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <h3>食事管理サポート</h3>
-                    <p>トレーニングだけでなく、食事面からもサポートし、理想のカラダへ導きます。</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <div class="container">
+    <!-- ホームタブ -->
+    <div id="home" class="tab-content" style="display: block;">
+      <h2>Welcome to リミットネス Gym</h2>
+      <p>リミットネスは、あなたの限界を挑戦するための最高の場所です。トレーニング設備は最新で、充実したサポート体制を整えています。ぜひ一度ご来館ください。</p>
+      <img src="image.jpg" alt="ジムのイメージ" style="max-width:100%; height:auto;">
+    </div>
 
-    <!-- コース紹介 -->
-    <section class="courses">
-        <div class="container">
-            <h2 class="section-title">トレーニングコース</h2>
-            <div class="courses-grid">
-                <div class="course-item">
-                    <img src="images/course1.jpg" alt="ダイエットコース">
-                    <h3>ダイエットコース</h3>
-                    <p>効率的な脂肪燃焼と体質改善で、リバウンドしにくい体づくりを目指します。</p>
-                    <a href="price.html" class="more-btn">詳細を見る</a>
-                </div>
-                <div class="course-item">
-                    <img src="images/course2.jpg" alt="ボディメイクコース">
-                    <h3>ボディメイクコース</h3>
-                    <p>理想の体型に向けて、筋肉を適切に発達させ、メリハリのある体を作ります。</p>
-                    <a href="price.html" class="more-btn">詳細を見る</a>
-                </div>
-                <div class="course-item">
-                    <img src="images/course3.jpg" alt="機能改善コース">
-                    <h3>機能改善コース</h3>
-                    <p>姿勢改善や体の歪み修正など、日常生活の質を高めるトレーニングを提供します。</p>
-                    <a href="price.html" class="more-btn">詳細を見る</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- ジム概要タブ -->
+    <div id="overview" class="tab-content">
+      <h2>ジム概要</h2>
+      <p>リミットネス Gym は、最新設備と経験豊富なトレーナーにより、あなたのフィットネスライフを全力でサポートします。広いトレーニングエリア、専用器具、ヨガ・ピラティス用スタジオなど、充実した施設を完備しています。</p>
+      <h3>施設の特徴</h3>
+      <ul>
+        <li>最新マシン導入</li>
+        <li>パーソナルトレーニングプログラム</li>
+        <li>充実した会員専用ダッシュボード（今後の機能拡張予定）</li>
+      </ul>
+      <img src="image.jpg" alt="その他施設イメージ" style="max-width:100%; height:auto;">
+    </div>
 
-    <!-- お客様の声 -->
-    <section class="testimonials">
-        <div class="container">
-            <h2 class="section-title">お客様の声</h2>
-            <div class="testimonials-slider">
-                <div class="testimonial-item">
-                    <p class="testimonial-text">「3ヶ月で10kgの減量に成功しました。トレーナーさんの熱心な指導と食事管理のアドバイスが本当に役立ちました。」</p>
-                    <div class="testimonial-author">
-                        <p class="name">鈴木 健太</p>
-                        <p class="age">32歳 会社員</p>
-                    </div>
-                </div>
-                <div class="testimonial-item">
-                    <p class="testimonial-text">「産後の体型が気になっていましたが、無理なく続けられるプログラムで理想の体型を取り戻せました。完全個室なので周りを気にせずトレーニングできるのが良かったです。」</p>
-                    <div class="testimonial-author">
-                        <p class="name">佐藤 美咲</p>
-                        <p class="age">28歳 主婦</p>
-                    </div>
-                </div>
-                <div class="testimonial-item">
-                    <p class="testimonial-text">「デスクワークでの肩こりや腰痛に悩んでいましたが、機能改善コースで姿勢が改善され、痛みが軽減しました。日常生活の質が格段に上がりました。」</p>
-                    <div class="testimonial-author">
-                        <p class="name">田中 誠</p>
-                        <p class="age">45歳 会社役員</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- 予約タブ -->
+    <div id="reservation" class="tab-content">
+      <h2>予約管理</h2>
+      
+      <!-- 予約状況確認 -->
+      <section id="reservation-status">
+        <h3>現在の予約状況</h3>
+        <button id="checkReservationBtn">予約状況を確認する</button>
+        <div id="reservationResults"></div>
+      </section>
+      
+      <hr>
 
-    <!-- お知らせ -->
-    <section class="news">
-        <div class="container">
-            <h2 class="section-title">お知らせ</h2>
-            <ul class="news-list">
-                <li>
-                    <span class="date">2023.10.01</span>
-                    <span class="category">キャンペーン</span>
-                    <a href="#">10月入会キャンペーン実施中！入会金50%OFF</a>
-                </li>
-                <li>
-                    <span class="date">2023.09.15</span>
-                    <span class="category">イベント</span>
-                    <a href="#">健康セミナー「正しい食事と運動の関係」開催のお知らせ</a>
-                </li>
-                <li>
-                    <span class="date">2023.09.01</span>
-                    <span class="category">お知らせ</span>
-                    <a href="#">新トレーナー2名が加わりました</a>
-                </li>
-            </ul>
-            <a href="#" class="more-news">お知らせ一覧へ</a>
-        </div>
-    </section>
+      <!-- 新規予約フォーム -->
+      <section id="newReservation">
+        <h3>新規予約</h3>
+        <p>※ ご予約は、まず空いている日付と時間を選び、名字（苗字）を入力してください。初回ご利用の方は、氏名、性別、メール（任意）の入力も必要となります。</p>
+        <form id="reservationForm">
+          <label for="date">日付を選択</label>
+          <input type="date" id="date" name="date" required>
+          
+          <label for="time">時間を選択</label>
+          <select id="time" name="time" required>
+            <option value="">-- 時間を選択 --</option>
+            <option value="06:00">06:00</option>
+            <option value="07:00">07:00</option>
+            <option value="08:00">08:00</option>
+            <option value="09:00">09:00</option>
+            <option value="10:00">10:00</option>
+            <!-- 必要に応じてオプション追加 -->
+          </select>
+          
+          <label for="surname">名字（苗字）</label>
+          <input type="text" id="surname" name="surname" placeholder="例：山田" required>
+          
+          <p>初回ご利用の方はこちらをご記入ください（既にご利用済みの方は不要です）</p>
+          <label for="fullname">氏名</label>
+          <input type="text" id="fullname" name="fullname" placeholder="例：山田 太郎">
+          
+          <label>性別</label>
+          <select id="gender" name="gender">
+            <option value="">-- 選択してください --</option>
+            <option value="male">男性</option>
+            <option value="female">女性</option>
+          </select>
+          
+          <label for="email">メール（任意）</label>
+          <input type="email" id="email" name="email" placeholder="例：example@example.com">
+          
+          <button type="submit">予約を送信</button>
+        </form>
+        <div id="formStatus" class="status-message"></div>
+      </section>
+    </div>
+  </div>
 
-    <!-- CTAセクション -->
-    <section class="cta">
-        <div class="container">
-            <h2>あなたの理想のカラダづくりを始めましょう</h2>
-            <p>まずは無料カウンセリングで、あなたの目標や悩みをお聞かせください。</p>
-            <div class="cta-buttons">
-                <a href="reservation.html" class="cta-button">無料カウンセリングを予約する</a>
-                <a href="contact.html" class="cta-button outline">お問い合わせ</a>
-            </div>
-        </div>
-    </section>
+  <script>
+    // タブの切り替え機能
+    document.querySelectorAll('nav .tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        // 全てのタブからactiveクラスを削除
+        document.querySelectorAll('nav .tab').forEach(function(t) {
+          t.classList.remove('active');
+        });
+        // 全てのタブコンテンツを非表示
+        document.querySelectorAll('.tab-content').forEach(function(content) {
+          content.style.display = 'none';
+        });
+        // クリックしたタブにactiveクラスを付与し、対応するコンテンツを表示
+        tab.classList.add('active');
+        var target = tab.getAttribute('data-target');
+        document.getElementById(target).style.display = 'block';
+      });
+    });
 
-    <!-- フッター -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>LIMITNESS</h2>
-                    <p>パーソナルトレーニングジム</p>
-                </div>
-                <div class="footer-info">
-                    <p>〒123-4567 東京都○○区△△町1-2-3</p>
-                    <p>TEL: 03-1234-5678</p>
-                    <p>営業時間: 平日 9:00-22:00 / 土日祝 10:00-19:00</p>
-                </div>
-                <div class="footer-nav">
-                    <ul>
-                        <li><a href="index.html">ホーム</a></li>
-                        <li><a href="about.html">ジム紹介</a></li>
-                        <li><a href="price.html">料金プラン</a></li>
-                        <li><a href="trainers.html">トレーナー</a></li>
-                        <li><a href="facility.html">施設案内</a></li>
-                        <li><a href="reservation.html">予約</a></li>
-                        <li><a href="access.html">アクセス</a></li>
-                        <li><a href="contact.html">お問い合わせ</a></li>
-                    </ul>
-                </div>
-                <div class="social-links">
-                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 LIMITNESS All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
+    // 予約状況確認ボタンの処理
+    document.getElementById('checkReservationBtn').addEventListener('click', function() {
+      // 仮のAPIエンドポイントへGETリクエスト
+      fetch('https://example.com/api/getReservationStatus')
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          // 例：dataは以下と仮定
+          // { reservations: [ {date:"2023-10-15", time:"08:00", surname:"山田"}, ... ] }
+          var html = '<table><thead><tr><th>日付</th><th>時間</th><th>名字</th></tr></thead><tbody>';
+          if(data.reservations && data.reservations.length > 0) {
+            data.reservations.forEach(function(item) {
+              html += '<tr><td>' + item.date + '</td><td>' + item.time + '</td><td>' + item.surname + '</td></tr>';
+            });
+          } else {
+            html += '<tr><td colspan="3">予約はありません</td></tr>';
+          }
+          html += '</tbody></table>';
+          document.getElementById('reservationResults').innerHTML = html;
+        })
+        .catch(function(error) {
+          document.getElementById('reservationResults').innerHTML = 'エラーが発生しました。';
+          console.error('Error:', error);
+        });
+    });
 
-    <script src="js/main.js"></script>
+    // 予約フォーム送信の処理
+    document.getElementById('reservationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var formData = {
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        surname: document.getElementById('surname').value,
+        fullname: document.getElementById('fullname').value,
+        gender: document.getElementById('gender').value,
+        email: document.getElementById('email').value
+      };
+      
+      // 入力チェック（例：初回の場合、fullnameとgenderが未入力の場合は警告）
+      if(formData.fullname === '' || formData.gender === '') {
+        // 初回予約のときの入力を要求（※ここをユーザーの状況に合わせて調整します）
+        if(!confirm("初回ご利用の場合、氏名と性別の入力が必要です。本当に続行しますか？")) {
+          return;
+        }
+      }
+      
+      // 仮のAPIエンドポイントへPOSTリクエスト
+      fetch('https://example.com/api/createReservation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(result) {
+        var statusDiv = document.getElementById('formStatus');
+        // 仮想のレスポンス例: { success: true, message: "予約が完了しました" }
+        if(result.success) {
+          statusDiv.textContent = result.message || "予約が完了しました。確認メールを送信しました。";
+          statusDiv.className = 'status-message status-success';
+          statusDiv.style.display = 'block';
+          // 必要ならフォームのリセットなど
+          document.getElementById('reservationForm').reset();
+        } else {
+          statusDiv.textContent = result.message || "予約に失敗しました。";
+          statusDiv.className = 'status-message status-error';
+          statusDiv.style.display = 'block';
+        }
+      })
+      .catch(function(error) {
+        var statusDiv = document.getElementById('formStatus');
+        statusDiv.textContent = "エラーが発生しました。";
+        statusDiv.className = 'status-message status-error';
+        statusDiv.style.display = 'block';
+        console.error('Error:', error);
+      });
+    });
+  </script>
 </body>
 </html>
